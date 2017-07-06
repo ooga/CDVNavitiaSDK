@@ -1,8 +1,6 @@
 var exec = require('cordova/exec');
 var PlacesRequestBuilder = (function () {
     function PlacesRequestBuilder() {
-        this.q = '';
-        this.count = 10;
     }
     PlacesRequestBuilder.prototype.withQ = function (q) {
         this.q = q;

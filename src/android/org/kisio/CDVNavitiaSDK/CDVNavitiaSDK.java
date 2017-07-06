@@ -57,7 +57,13 @@ public class CDVNavitiaSDK extends CordovaPlugin {
             @Override
             public void run() {
                 try {
-                    placesRequestBuilder.withQ(String.valueOf(params.get("q"))).withCount(Integer.parseInt(String.valueOf(params.get("count")))).rawGet(new ApiCallback<String>() {
+                    if (params.has("q") && (params.getString("q") != null) && (!params.getString("q").isEmpty()) ) {
+                        placesRequestBuilder.withQ(params.getString("q"));
+                    }
+                    if (params.has("count") && (params.getString("count") != null)) {
+                        placesRequestBuilder.withCount(params.getInt("count"));
+                    }
+                    placesRequestBuilder.rawGet(new ApiCallback<String>() {
                         @Override
                         public void onFailure(ApiException e, int statusCode, Map<String, List<String>> responseHeaders) {
                             callbackContext.error("Problem during request call | " + e.getMessage());

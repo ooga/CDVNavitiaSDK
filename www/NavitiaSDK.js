@@ -1,40 +1,40 @@
 var exec = require('cordova/exec');
-
-function EndPointRequestBuilderPlaces() {
-    this.props = {};
-};
-
-EndPointRequestBuilderPlaces.prototype.withQ = function(q) {
-    this.props.q = q;
-    return this;
-}
-
-EndPointRequestBuilderPlaces.prototype.withCount = function(count) {
-    this.props.count = count;
-    return this;
-}
-
-EndPointRequestBuilderPlaces.prototype.get = function(successCallback, errorCallback) {
-    exec(
-        successCallback,
-        errorCallback,
-        'NavitiaSDK',
-        'endpoint_places',
-        [this.props]
-    );
-}
-
-module.exports = {
-    init: function(token) {
-        exec(
-            function(success) { },
-            function(error) { },
-            'NavitiaSDK',
-            'init',
-            [token]
-        );
-    },
-    endpoints: {
-        places: { newRequestBuilder: function() { return new EndPointRequestBuilderPlaces() }}
+var PlacesRequestBuilder = (function () {
+    function PlacesRequestBuilder() {
+        this.q = '';
+        this.count = 10;
     }
-};
+    PlacesRequestBuilder.prototype.withQ = function (q) {
+        this.q = q;
+        return this;
+    };
+    PlacesRequestBuilder.prototype.withCount = function (count) {
+        this.count = count;
+        return this;
+    };
+    PlacesRequestBuilder.prototype.get = function (successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'NavitiaSDK', 'PlacesRequestBuilder.get', [{ q: this.q, count: this.count }]);
+    };
+    return PlacesRequestBuilder;
+}());
+var PlacesApi = (function () {
+    function PlacesApi() {
+    }
+    PlacesApi.prototype.newPlacesRequestBuilder = function () {
+        return new PlacesRequestBuilder();
+    };
+    return PlacesApi;
+}());
+var NavitiaSDK = (function () {
+    function NavitiaSDK() {
+    }
+    NavitiaSDK.prototype.init = function (token, successCallback, errorCallback) {
+        this.token = token;
+        this.placesApi = new PlacesApi();
+        exec(successCallback, errorCallback, 'NavitiaSDK', 'init', [token]);
+    };
+    return NavitiaSDK;
+}());
+
+
+module.exports = NavitiaSDK;

@@ -22,7 +22,8 @@
             </feature>
         </config-file>
         <source-file src="src/android/org/kisio/CDVNavitiaSDK/CDVNavitiaSDK.java" target-dir="src/org/kisio/CDVNavitiaSDK" />
-        <framework src="org.kisio.sdk:navitia-sdk:0.1.0" />
-        <framework src="com.googlecode.json-simple:json-simple:1.1.1" />
+        <!--<framework src="org.kisio.sdk:navitia-sdk:0.1.0" />-->
+        <!--<framework src="com.googlecode.json-simple:json-simple:1.1.1" />-->
+        <lib-file src="libs/android/navitia-sdk-0.2.0-jar-with-dependencies.jar" />
     </platform>
 </plugin>

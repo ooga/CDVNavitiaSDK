@@ -71,7 +71,14 @@ public class CDVNavitiaSDK extends CordovaPlugin {
 
                         @Override
                         public void onSuccess(String result, int statusCode, Map<String, List<String>> responseHeaders) {
-                            callbackContext.success(result);
+                            JSONObject jsonObject = null;
+                            try {
+                                jsonObject = new JSONObject(result);
+                                callbackContext.success(jsonObject);
+                            } catch (Exception e) {
+                                String errorMessage = "Problem during response parsing | " + String.valueOf(e.hashCode()) + ": " + e.getMessage();
+                                callbackContext.error(errorMessage);
+                            }
                         }
 
                         @Override

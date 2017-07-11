@@ -11,7 +11,7 @@ var PlacesRequestBuilder = (function () {
         return this;
     };
     PlacesRequestBuilder.prototype.get = function (successCallback, errorCallback) {
-        exec(successCallback, errorCallback, 'NavitiaSDK', 'PlacesRequestBuilder.get', [{ q: this.q, count: this.count }]);
+        exec(successCallback, errorCallback, 'NavitiaSDK', 'PlacesRequestBuilder_get', [{ q: this.q, count: this.count }]);
     };
     return PlacesRequestBuilder;
 }());

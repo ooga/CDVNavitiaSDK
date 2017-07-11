@@ -38,7 +38,7 @@ public class CDVNavitiaSDK extends CordovaPlugin {
             String token = args.getString(0);
             this.init(token, callbackContext);
             return true;
-        } else if (action.equals("PlacesRequestBuilder.get")) {
+        } else if (action.equals("PlacesRequestBuilder_get")) {
             JSONObject params = args.getJSONObject(0);
             this.getPlacesAsyncRaw(params, callbackContext);
             return true;

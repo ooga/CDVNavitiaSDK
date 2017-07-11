@@ -4,12 +4,13 @@
 #import <Cordova/CDV.h>
 #import <NavitiaSDK/NavitiaSDK-swift.h>
 
+
 @interface CDVNavitiaSDK : CDVPlugin
 
 @property (nonatomic, strong) NavitiaSDK *sdk;
 
 - (void)init:(CDVInvokedUrlCommand*)command;
-- (void)endpoint_places:(CDVInvokedUrlCommand*)command;
+- (void)PlacesRequestBuilder_get:(CDVInvokedUrlCommand*)command;
 
 @end
 

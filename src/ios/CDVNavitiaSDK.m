@@ -21,44 +21,52 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void)endpoint_places:(CDVInvokedUrlCommand*)command
+- (void)PlacesRequestBuilder_get:(CDVInvokedUrlCommand*)command
 {
-    NSDictionary* params = [command.arguments objectAtIndex:0];
-
-    if ([params isKindOfClass:[NSNull class]] || [params count] == 0) {
+    if ([self.sdk isKindOfClass:[NSNull class]]) {
         CDVPluginResult* pluginResult = nil;
-        NSString* errorMessage = @"Wrong parameters";
+        NSString* errorMessage = @"NavitiaSDK is not instanciated";
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    } else {
-        EndpointPlaces *places = [[self.sdk endpoints] places];
-        EndpointRequestBuilderPlaces *queryBuilder = [places newRequestBuilder];
+        return;
+    }
 
-        for (NSString* key in params) {
-            id value = [params objectForKey:key];
-            if ([value isKindOfClass:[NSNumber class]]) {
-                value = [value stringValue];
-            }
-            [queryBuilder addQueryParameterWithKey:key value:value];
-        }
+    NSDictionary* params = [command.arguments objectAtIndex:0];
+    if ([params isKindOfClass:[NSNull class]] || [params count] == 0) {
+        CDVPluginResult* pluginResult = nil;
+        NSString* errorMessage = @"Problems with parameters handling";
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
 
-        [queryBuilder rawGetWithCallback: ^(NSDictionary *results)
-        {
-            NSLog(@"SDK places with query %@", [queryBuilder getUrl]);
+    PlacesRequestBuilder *placesRequestBuilder = [[self.sdk placesApi] newPlacesRequestBuilder];
+
+    id value = nil;
+    value = [params objectForKey:@"q"];
+    if ([value isKindOfClass:[NSNumber class]]) {
+        value = [value stringValue];
+        [placesRequestBuilder withQ:value];
+    }
+
+    [placesRequestBuilder rawGetWithCompletion:^(NSString *results, NSError *error)
+    {
+        if ([error isKindOfClass:[NSNull class]]) {
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:results];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        }
-        errorCallback:^(ResourceRequestError *sdkError)
-        {
+
+        } else {
             NSLog(@"SDK places fail");
             NSDictionary *userInfo = @{
-                @"NSLocalizedDescriptionKey" : sdkError.message
+                @"NSLocalizedDescriptionKey" : [error localizedDescription]
             };
-            NSError *error = [NSError errorWithDomain:@"NavitiaSDK" code:sdkError.httpStatusCode userInfo:userInfo];
-            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:sdkError.message];
+            NSError *error = [NSError errorWithDomain:@"NavitiaSDK" code:[error code] userInfo:userInfo];
+            CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[error localizedDescription]];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        }];
-    }
+
+        }
+    }];
+
 }
 
 @end
